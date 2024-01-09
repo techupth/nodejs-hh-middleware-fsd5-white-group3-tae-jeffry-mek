@@ -2,19 +2,20 @@ import { Router } from "express";
 
 import { assignments as assignmentsFromFile } from "../data/assignments.js";
 import { comments as commentsFromFile } from "../data/comments.js";
-
+import logging from "../middlewares/logging.js";
 let assignments = [...assignmentsFromFile];
 let comments = [...commentsFromFile];
 
 const assignmentRouter = Router();
 
-assignmentRouter.get("/", (req, res) => {
+//GET
+assignmentRouter.get("/", logging, (req, res) => {
   return res.json({
     data: assignments,
   });
 });
-
-assignmentRouter.get("/:id", (req, res) => {
+//GET ID
+assignmentRouter.get("/:id", logging, (req, res) => {
   const assignmentId = +req.params.id;
   const hasFound = assignments.find((assign) => assign.id === assignmentId);
 
@@ -30,8 +31,8 @@ assignmentRouter.get("/:id", (req, res) => {
     data: assignment[0],
   });
 });
-
-assignmentRouter.post("/", (req, res) => {
+//POST
+assignmentRouter.post("/", logging, (req, res) => {
   const newAssignment = req.body;
   const newAssignmentId = assignments[assignments.length - 1].id + 1;
 
@@ -45,7 +46,8 @@ assignmentRouter.post("/", (req, res) => {
   });
 });
 
-assignmentRouter.put("/:id", (req, res) => {
+//PUT
+assignmentRouter.put("/:id", logging, (req, res) => {
   const updateAssignment = req.body;
   const assignmentId = +req.params.id;
 
@@ -71,7 +73,8 @@ assignmentRouter.put("/:id", (req, res) => {
   });
 });
 
-assignmentRouter.delete("/:id", (req, res) => {
+//DELETE
+assignmentRouter.delete("/:id", logging, (req, res) => {
   const assignmentId = +req.params.id;
 
   const hasFound = assignments.find((assign) => assign.id === assignmentId);
@@ -91,7 +94,8 @@ assignmentRouter.delete("/:id", (req, res) => {
   });
 });
 
-assignmentRouter.get("/:id/comments", (req, res) => {
+//GET ID
+assignmentRouter.get("/:id/comments", logging, (req, res) => {
   const assignmentId = +req.params.id;
 
   const assignmentComments = comments.filter((comment) => {
@@ -103,7 +107,8 @@ assignmentRouter.get("/:id/comments", (req, res) => {
   });
 });
 
-assignmentRouter.post("/:id/comments", (req, res) => {
+//POST
+assignmentRouter.post("/:id/comments", logging, (req, res) => {
   const assignmentId = +req.params.id;
   const newComment = req.body;
   const commentId = comments[comments.length - 1].id + 1;
@@ -119,12 +124,11 @@ assignmentRouter.post("/:id/comments", (req, res) => {
   });
 });
 
-assignmentRouter.delete("/:id/comments", (req, res) => {
+//DELETE
+assignmentRouter.delete("/:id/comments", logging, (req, res) => {
   const assignmentId = +req.params.id;
 
-  const hasFound = comments.find(
-    (comment) => comment.assignmentId === assignmentId
-  );
+  const hasFound = comments.find((comment) => comment.assignmentId === assignmentId);
   if (!hasFound) {
     return res.status(404).json({
       message: `${assignmentId} not found`,

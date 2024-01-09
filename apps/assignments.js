@@ -3,6 +3,7 @@ import { Router } from "express";
 import { assignments as assignmentsFromFile } from "../data/assignments.js";
 import { comments as commentsFromFile } from "../data/comments.js";
 import logging from "../middlewares/logging.js";
+import validateAssignmentData from "../middlewares/assignmentValidation.js";
 let assignments = [...assignmentsFromFile];
 let comments = [...commentsFromFile];
 
@@ -32,7 +33,7 @@ assignmentRouter.get("/:id", logging, (req, res) => {
   });
 });
 //POST
-assignmentRouter.post("/", logging, (req, res) => {
+assignmentRouter.post("/", logging, validateAssignmentData, (req, res) => {
   const newAssignment = req.body;
   const newAssignmentId = assignments[assignments.length - 1].id + 1;
 
@@ -47,7 +48,7 @@ assignmentRouter.post("/", logging, (req, res) => {
 });
 
 //PUT
-assignmentRouter.put("/:id", logging, (req, res) => {
+assignmentRouter.put("/:id", logging, validateAssignmentData, (req, res) => {
   const updateAssignment = req.body;
   const assignmentId = +req.params.id;
 
